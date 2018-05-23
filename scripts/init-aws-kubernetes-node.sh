@@ -41,6 +41,9 @@ yum install -y kubelet-$KUBERNETES_VERSION kubeadm-$KUBERNETES_VERSION kubernete
 sed -i 's/--cgroup-driver=systemd/--cgroup-driver=cgroupfs/g' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 sed -i '/Environment="KUBELET_CGROUP_ARGS/i Environment="KUBELET_CLOUD_ARGS=--cloud-provider=aws"' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 sed -i 's/$KUBELET_CGROUP_ARGS/$KUBELET_CLOUD_ARGS $KUBELET_CGROUP_ARGS/g' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+sed -i '/Environment="KUBELET_KUBECONFIG_ARGS/i \
+Environment="KUBELET_EXTRA_ARGS=--eviction-hard=memory.available<500Mi --system-reserved=memory=1.5Gi"\
+' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
 # Start services
 systemctl enable docker
